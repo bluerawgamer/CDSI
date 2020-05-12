@@ -556,10 +556,10 @@ associationclass Preco
 end --Preco
 
 
-association Bilhete_TabelaPrecos between
-	Bilhete [*] role bilhetes
-	TabelaPrecos [*] role tabela
-end
+--association Bilhete_TabelaPrecos between
+	--Bilhete [*] role bilhetes
+	--TabelaPrecos [*] role tabela
+--end
 
 --------------------------------------------------------------
 -- Associations
