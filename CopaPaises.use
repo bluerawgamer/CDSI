@@ -519,16 +519,6 @@ class TabelaPrecos
 
 end --TabelaPrecos
 
-class Preco
-    attributes
-        custo: Integer;
-
-    operations
-
-    constraints
-
-end --Preco
-
 
 class Acesso
     attributes
@@ -550,6 +540,26 @@ class Televisao
 
 end --Televisão
 
+associationclass Preco
+
+	between
+		Bilhete [0..*] role bilhete
+		TabelaPrecos [0..*] role tabelaPrecos
+
+    attributes
+        custo: Integer;
+
+    operations
+
+    constraints
+
+end --Preco
+
+
+association Bilhete_TabelaPrecos between
+	Bilhete [*] role bilhetes
+	TabelaPrecos [*] role tabela
+end
 
 --------------------------------------------------------------
 -- Associations
