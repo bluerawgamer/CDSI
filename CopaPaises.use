@@ -556,10 +556,35 @@ associationclass Preco
 end --Preco
 
 
---association Bilhete_TabelaPrecos between
-	--Bilhete [*] role bilhetes
-	--TabelaPrecos [*] role tabela
---end
+association Bilhete_Lugar between
+	Bilhete [*] role bilhete
+	Lugar [*] role lugar
+end
+
+association Jogo_Televisao between
+    Jogo [0..*] role jogo
+    Televisao [0..1] role televisao
+end
+
+association Bilhete_Estadio between
+    Bilhete [*] role bilhete
+    Estadio [1] role estadio
+end
+
+association Bilhete_Jogo between
+    Bilhete [*] role bilhete
+    Jogo [1] role jogo
+end
+
+association Jogo_Acesso between
+    Jogo [1] role jogo
+    Acesso [0..1] role acesso
+end
+
+association Estadio_Acesso between
+    Estadio [1] role estadio
+    Acesso [0..1] role acesso
+end
 
 --------------------------------------------------------------
 -- Associations
