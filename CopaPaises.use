@@ -26,37 +26,37 @@ class Continente
 		@precondition(rationale="O nome do continente deve estar preenchido!")		
 		pre Continente_NomeNaoVazio: nome_.size()>0
 			
-		@precondition(rationale="O nome do continente deve ser único!")
+		@precondition(rationale="O nome do continente deve ser ï¿½nico!")
 		pre Continente_NomeUnico: Continente.allInstances.nome->excludes(nome_)
 		
 end --Continente
 
 ---------------------------------------------------------------------------------
 @header(
-		description = "As instâncias desta classe representam os países envolvidos na realização dos campeonatos descritos neste sistema de informação",
+		description = "As instï¿½ncias desta classe representam os paï¿½ses envolvidos na realizaï¿½ï¿½o dos campeonatos descritos neste sistema de informaï¿½ï¿½o",
 		author = "Fernando Brito e Abreu",
 		date = "2019/03/17"
 )
 ---------------------------------------------------------------------------------
 class Pais
 	attributes
-		@prompt(pt="Designação", uk="Designation")
+		@prompt(pt="Designaï¿½ï¿½o", uk="Designation")
 		nome: String
 		
-		@prompt(pt="População", uk="Population")
+		@prompt(pt="Populaï¿½ï¿½o", uk="Population")
 		populacao: Integer
 
-		@prompt(pt="Área (Km quadrados)", uk="Area (square Kms)")
+		@prompt(pt="ï¿½rea (Km quadrados)", uk="Area (square Kms)")
 		area: Integer
 		
 		
 	operations
 	
 		@parameters(
-			nome_ = "O nome do país",
-			populacao_ = "Número de habitantes do país",
-			area_ = "Área do país em Km quadrados",
-			continente_ = "Continente em que o país se situa"
+			nome_ = "O nome do paï¿½s",
+			populacao_ = "Nï¿½mero de habitantes do paï¿½s",
+			area_ = "ï¿½rea do paï¿½s em Km quadrados",
+			continente_ = "Continente em que o paï¿½s se situa"
 		)
 		inicializa(nome_: String, populacao_: Integer, area_: Integer, continente_: Continente)
 			begin
@@ -66,19 +66,19 @@ class Pais
 				insert (continente_, self) into Continente_Pais
 			end
 		
-		@precondition(rationale="O nome do país deve estar preenchido!")
+		@precondition(rationale="O nome do paï¿½s deve estar preenchido!")
 		pre Pais_NomeNaoVazio: nome_.size() > 0
 		
-		@precondition(rationale="O nome do país deve ser único!")
+		@precondition(rationale="O nome do paï¿½s deve ser ï¿½nico!")
 		pre Pais_NomeUnico: Pais.allInstances.nome->excludes(nome_)
 		
-		@precondition(rationale="A população do país deve ser maior ou igual que a população das suas cidades!")
+		@precondition(rationale="A populaï¿½ï¿½o do paï¿½s deve ser maior ou igual que a populaï¿½ï¿½o das suas cidades!")
 		pre Pais_Populacao: populacao_ >= self.cidades.populacao->sum
 		
-		@precondition(rationale="A área do país não pode ser nula!")
+		@precondition(rationale="A ï¿½rea do paï¿½s nï¿½o pode ser nula!")
 		pre Pais_AreaNaoNula: area_ > 0
 		
-		@precondition(rationale="O continente em que se situa o país deve ser conhecido!")
+		@precondition(rationale="O continente em que se situa o paï¿½s deve ser conhecido!")
 		pre Pais_Continente: continente_.isDefined()
 				
 end --Pais
@@ -99,10 +99,10 @@ class Cidade
 				insert (pais_,self) into Pais_Cidade
 			end
 			
-		@postcondition(rationale="Não pode haver outra cidade com o mesmo nome no mesmo país!")	
+		@postcondition(rationale="Nï¿½o pode haver outra cidade com o mesmo nome no mesmo paï¿½s!")	
 		post Cidade_NomeUnico: self.pais.cidades->one(nome=nome_)	
 		
-		@postcondition(rationale="Não pode haver outra capital no país!")
+		@postcondition(rationale="Nï¿½o pode haver outra capital no paï¿½s!")
 		post Cidade_CapitalUnica: capital_ implies self.pais.cidades->one(capital)
 		
 end --Cidade
@@ -110,7 +110,7 @@ end --Cidade
 class Estadio
 	attributes
 		nome: String
-		inauguracao: Integer -- ano de inauguração
+		inauguracao: Integer -- ano de inauguraï¿½ï¿½o
 		lotacao: Integer
 		
 	operations
@@ -123,7 +123,7 @@ class Estadio
 			end	
 		
 	constraints
-		@invariant(rationale="O nome do estádio deve ser único!")
+		@invariant(rationale="O nome do estï¿½dio deve ser ï¿½nico!")
 		inv NomeUnico: Estadio.allInstances->isUnique(nome)
 		
 end --Estadio
@@ -170,13 +170,13 @@ class Campeonato
 			end
 	
 	constraints
-		@invariant(rationale="O nome do campeonato deve ser único!")
+		@invariant(rationale="O nome do campeonato deve ser ï¿½nico!")
 		inv NomeUnico: Campeonato.allInstances->isUnique(nome)
 
-		@invariant(rationale="A data final do campeonato deve ocorrer depois do seu início!")
+		@invariant(rationale="A data final do campeonato deve ocorrer depois do seu inï¿½cio!")
 		inv DatasCorretas: data_inicio.isBefore(data_fim)
 		
-		@invariant(rationale="Todos os participantes devem ter pelo menos 16 anos quando o campeonato começa!")
+		@invariant(rationale="Todos os participantes devem ter pelo menos 16 anos quando o campeonato comeï¿½a!")
 		inv IdadeMinimaParticipantes: self.participante.nacionais->forAll(self.data_inicio.yearsSince(data_nascimento) >= 16)
 		
 end --Campeonato
@@ -221,7 +221,7 @@ associationclass Participacao
 			end
 				
 	constraints
-		@invariant(rationale="Não há classificações negativas!")
+		@invariant(rationale="Nï¿½o hï¿½ classificaï¿½ï¿½es negativas!")
 		inv ClassificacaoNaoNegativa: self.classificacao >= 0
 	
 end --Participacao
@@ -275,7 +275,7 @@ class Jogo
 			end	
 
 	constraints
-		@invariant(rationale="O jogo deve decorrer na data de abertura do campeonato ou após a mesma!")
+		@invariant(rationale="O jogo deve decorrer na data de abertura do campeonato ou apï¿½s a mesma!")
 		inv DataJogoInicio: self.dia.isEqual(self.grupo.campeonato.data_inicio) or self.dia.isAfter(self.grupo.campeonato.data_inicio) 
 		
 		@invariant(rationale="O jogo deve decorrer na data de encerramento do campeonato ou antes desta a mesma!")
@@ -388,7 +388,7 @@ abstract class Participante
 			end
 			
 	constraints
-		@invariant(rationale="O nome do participante deve ser único!")
+		@invariant(rationale="O nome do participante deve ser ï¿½nico!")
 		inv NomeUnico: Participante.allInstances->isUnique(nome)
 	
 end --Participante
@@ -430,7 +430,7 @@ associationclass Membro
 		minuto_saida: Integer
 		
 	constraints
-		@invariant(rationale="Só pode ser exibido um cartão vermelho!")
+		@invariant(rationale="Sï¿½ pode ser exibido um cartï¿½o vermelho!")
 		inv VermelhoSoPodeSerUm: self.cartoes->select(tipo=TipoCartao::Vermelho)->size<2
 		
 end --Membro
@@ -468,10 +468,10 @@ class Cartao
 			end			
 		
 	constraints
-		@invariant(rationale="Se o cartão for vermelho, então o minuto de saída do jogador deve ser o minuto em que foi exibido o cartão!")
+		@invariant(rationale="Se o cartï¿½o for vermelho, entï¿½o o minuto de saï¿½da do jogador deve ser o minuto em que foi exibido o cartï¿½o!")
 		inv CartaoVermelhoDaExpulsao: self.tipo=TipoCartao::Vermelho implies self.membro.minuto_saida = self.minuto
 
-		@invariant(rationale="Ao 2º cartão amarelo, então o minuto de saída do jogador deve ser o minuto em que foi exibido o cartão!")
+		@invariant(rationale="Ao 2ï¿½ cartï¿½o amarelo, entï¿½o o minuto de saï¿½da do jogador deve ser o minuto em que foi exibido o cartï¿½o!")
 		inv SegundoCartaoAmareloDaExpulsao: self.tipo=TipoCartao::Amarelo and self.membro.cartoes->one(minuto<self.minuto) implies self.membro.minuto_saida = self.minuto
 
 end --Golo
@@ -778,4 +778,29 @@ class Random
 			
 		pre LastGreaterThanInitial: last > initial
 			
+end
+
+-------------------------------------------------------------------------------------------------
+
+abstract class Seguranca
+
+end
+
+-------------------------------------------------------------------------------------------------
+
+class Privado < Seguranca
+
+    attributes:
+        name: String
+        funcao: String
+
+end
+
+-------------------------------------------------------------------------------------------------
+
+class PSP < Seguranca
+
+    attributes:
+        cidade: String
+
 end
