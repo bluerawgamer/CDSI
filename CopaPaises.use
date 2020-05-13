@@ -498,7 +498,6 @@ end
 class PSP < Seguranca
 
     attributes
-        cidade: String
 
 end
 
@@ -577,13 +576,13 @@ composition Campeonato_Grupo between
 end
 
 composition Setor_Estadio between
-    Setor [1..*] role setor
     Estadio [1] role estadio
+    Setor [1..*] role setor
 end
 
 composition Porta_Setor between
+    Setor [1] role setor
     Porta [1..*] role porta
-    Setor [1..2] role setor
 end
 
 aggregation Grupo_Pais between 
@@ -684,6 +683,11 @@ end
 association Setor_Presenca between
     Setor [1] role setor
     Detetor_Presenca [1..*] role presenca
+end
+
+association PSP_Cidade between
+    Cidade [1] role cidade
+    PSP [0..1] role psp
 end
 
 --------------------------------------------------------------
