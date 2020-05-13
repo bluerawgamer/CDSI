@@ -476,6 +476,31 @@ class Cartao
 
 end --Golo
 
+-------------------------------------------------------------------------------------------------
+
+abstract class Seguranca
+
+end
+
+-------------------------------------------------------------------------------------------------
+
+class Privado < Seguranca
+
+    attributes
+        name: String
+        funcao: String
+
+end
+
+-------------------------------------------------------------------------------------------------
+
+class PSP < Seguranca
+
+    attributes
+        cidade: String
+
+end
+
 --------------------------------------------------------------
 -- Associations
 --------------------------------------------------------------
@@ -548,6 +573,16 @@ end
 association Membro_Cartao between 
 	Membro [1] role membro
 	Cartao [0..2] role cartoes
+end
+
+association Policiamento between
+    Seguranca [1..*] role seguranca
+    Jogo [1] role jogo
+end
+
+association Contrato_Seguranca between
+    Seguranca [1..*] role seguranca
+    Clube [1..2] role clube
 end
 
 --------------------------------------------------------------
@@ -778,29 +813,4 @@ class Random
 			
 		pre LastGreaterThanInitial: last > initial
 			
-end
-
--------------------------------------------------------------------------------------------------
-
-abstract class Seguranca
-
-end
-
--------------------------------------------------------------------------------------------------
-
-class Privado < Seguranca
-
-    attributes:
-        name: String
-        funcao: String
-
-end
-
--------------------------------------------------------------------------------------------------
-
-class PSP < Seguranca
-
-    attributes:
-        cidade: String
-
 end
