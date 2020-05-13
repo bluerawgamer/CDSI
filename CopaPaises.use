@@ -7,6 +7,7 @@ enum TipoCampeonato {Europeu, Mundial}
 enum FaseCampeonato {Grupos, QuartosFinal, MeiasFinais, Final}
 enum TipoCartao {Amarelo, Vermelho}
 enum PosicaoJogador {GuardaRedes, Defesa, Medio, Avancado}
+enum Access {Publico, Media, Televisao, Privado}
 
 --------------------------------------------------------------
 -- Domain types
@@ -501,6 +502,71 @@ class PSP < Seguranca
 
 end
 
+-------------------------------------------------------------------------------------------------
+
+class Setor
+
+    attributes
+        numero: Integer
+        acesso: Access
+
+end
+
+-------------------------------------------------------------------------------------------------
+
+class Porta
+
+    attributes
+        numero: Integer
+
+end
+
+-------------------------------------------------------------------------------------------------
+
+class Camara
+
+    attributes
+        numero: Integer
+
+end
+
+-------------------------------------------------------------------------------------------------
+
+class Gravacoes
+
+    attributes
+        nome: String
+        data: CalendarDate
+
+end
+
+-------------------------------------------------------------------------------------------------
+
+class Extintor
+
+    attributes
+        validade: CalendarDate
+
+end
+
+-------------------------------------------------------------------------------------------------
+
+class Detetor_Presenca
+
+    attributes
+        numero: Integer
+
+end
+
+-------------------------------------------------------------------------------------------------
+
+class Detetor_CO2
+
+    attributes
+        numero: Integer
+
+end
+
 --------------------------------------------------------------
 -- Associations
 --------------------------------------------------------------
@@ -508,6 +574,16 @@ end
 composition Campeonato_Grupo between 
 	Campeonato [1] role campeonato
 	Grupo [*] role grupos
+end
+
+composition Setor_Estadio between
+    Setor [1..*] role setor
+    Estadio [1] role estadio
+end
+
+composition Porta_Setor between
+    Porta [1..*] role porta
+    Setor [1..2] role setor
 end
 
 aggregation Grupo_Pais between 
@@ -583,6 +659,31 @@ end
 association Contrato_Seguranca between
     Seguranca [1..*] role seguranca
     Clube [1..2] role clube
+end
+
+association Setor_Camara between
+    Setor [1] role setor
+    Camara [1..*] role camara
+end
+
+association Gravacao_Camara between
+    Gravacoes [*] role gravacoes
+    Camara [1] role camara
+end
+
+association Setor_Extintor between
+    Setor [1] role setor
+    Extintor [1..*] role extintor
+end
+
+association Setor_CO2 between
+    Setor [1] role setor
+    Detetor_CO2 [1..*] role co2
+end
+
+association Setor_Presenca between
+    Setor [1] role setor
+    Detetor_Presenca [1..*] role presenca
 end
 
 --------------------------------------------------------------
