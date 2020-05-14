@@ -479,8 +479,8 @@ end --Golo
 --------------------------------------------------------------
 -- Bilhética e Jogos
 
-enum Permissao {Media, Limpeza, Stewards}
-enum tipoVenda {Online, Local}
+enum PermissaoAcesso {Media, Limpeza, Stewards}
+enum TipoVenda {Online, Local}
 
 
 class Bilhete
@@ -511,7 +511,7 @@ end --Lugar
 
 class TabelaPrecos
     attributes
-        --tipoTabela
+        tipoVenda: TipoVenda;
 
     operations
 
@@ -522,7 +522,7 @@ end --TabelaPrecos
 
 class Acesso
     attributes
-        --permissao
+        permissaoAcesso: PermissaoAcesso
 
     operations
 
@@ -584,6 +584,11 @@ end
 association Estadio_Acesso between
     Estadio [1] role estadio
     Acesso [0..1] role acesso
+end
+
+composition Estadio_Lugar between
+    Estadio [1] role estadio
+    Lugar [*] role lugares
 end
 
 --------------------------------------------------------------
