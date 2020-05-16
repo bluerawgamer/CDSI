@@ -485,7 +485,10 @@ enum TipoVenda {Online, Local}
 
 class Bilhete
 	attributes
+	    nrBilhete: Integer;
 		validade: CalendarDate;
+		codigo: Integer;
+		funcionario: String;
 
 	operations
 
@@ -497,6 +500,7 @@ end --Bilhete
 
 class Lugar
     attributes
+        id: Integer;
         nrLugar: Integer;
         nrFila: Integer;
         nrPorta: Integer;
@@ -511,6 +515,7 @@ end --Lugar
 
 class TabelaPrecos
     attributes
+        id: Integer;
         tipoVenda: TipoVenda;
 
     operations
@@ -522,7 +527,8 @@ end --TabelaPrecos
 
 class Acesso
     attributes
-        permissaoAcesso: PermissaoAcesso
+        id: Integer;
+        permissaoAcesso: PermissaoAcesso;
 
     operations
 
@@ -532,6 +538,7 @@ end --Acesso
 
 class Televisao
     attributes
+        id: Integer;
         designacao: String;
 
     operations
