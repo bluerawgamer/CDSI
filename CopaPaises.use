@@ -513,15 +513,6 @@ end
 
 -------------------------------------------------------------------------------------------------
 
-class Porta
-
-    attributes
-        numero: Integer
-
-end
-
--------------------------------------------------------------------------------------------------
-
 class Camara
 
     attributes
@@ -577,12 +568,7 @@ end
 
 composition Setor_Estadio between
     Estadio [1] role estadio
-    Setor [1..*] role setor
-end
-
-composition Porta_Setor between
-    Setor [1] role setor
-    Porta [1..*] role porta
+    Setor [*] role setor
 end
 
 aggregation Grupo_Pais between 
@@ -651,18 +637,18 @@ association Membro_Cartao between
 end
 
 association Policiamento between
-    Seguranca [1..*] role seguranca
+    Seguranca [*] role seguranca
     Jogo [1] role jogo
 end
 
 association Contrato_Seguranca between
-    Seguranca [1..*] role seguranca
+    Seguranca [*] role seguranca
     Clube [1..2] role clube
 end
 
 association Setor_Camara between
     Setor [1] role setor
-    Camara [1..*] role camara
+    Camara [*] role camara
 end
 
 association Gravacao_Camara between
@@ -672,17 +658,17 @@ end
 
 association Setor_Extintor between
     Setor [1] role setor
-    Extintor [1..*] role extintor
+    Extintor [*] role extintor
 end
 
 association Setor_CO2 between
     Setor [1] role setor
-    Detetor_CO2 [1..*] role co2
+    Detetor_CO2 [*] role co2
 end
 
 association Setor_Presenca between
     Setor [1] role setor
-    Detetor_Presenca [1..*] role presenca
+    Detetor_Presenca [*] role presenca
 end
 
 association PSP_Cidade between
