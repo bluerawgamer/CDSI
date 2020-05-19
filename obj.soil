@@ -1,6 +1,9 @@
 reset
 
 --------------------------------------------------------------------------------
+!new CalendarDate('DataJogo1')
+!DataJogo1.initS('2012-06-08')
+
 !new Continente('Europa')
 !Europa.inicializa('Europa')
 
@@ -12,5 +15,21 @@ reset
 
 !new Estadio
 !Estadio1.inicializa('Bonfim', 1962, 15497, Cidade1)
+
+!new Bilhete('Bilhete1')
+!Bilhete1.inicializa(Estadio1, 1, DataJogo1 , 1234, 'Jose Antonio')
+
+!new Lugar('Lugar1')
+!Lugar1.inicializa(Estadio1, Bilhete1, 1, 1, 1, 1, 1)
+
+!new Preco
+
+!new TabelaPrecos('TabelaPrecosJogo1')
+!TabelaPrecosJogo1.inicializa(Set{Bilhete1}, 1, TipoVenda::Local)
+
+!new Preco('Central')
+!Central.inicializa
+
+
 --------------------------------------------------------------------------------
 check

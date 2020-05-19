@@ -491,9 +491,13 @@ class Bilhete
 		funcionario: String;
 
 	operations
-        inicializa(nome_: String)
+        inicializa(estadio: Estadio, nrBilhete_: Integer, validade_: CalendarDate, codigo_: Integer, funcionario_: String)
 			begin
-				self.nome:= nome_
+			    insert(self, estadio) into Bilhete_Estadio;
+				self.nrBilhete:= nrBilhete_;
+				self.validade:= validade_;
+				self.codigo:= codigo_;
+				self.funcionario:= funcionario_
 			end
 
 	constraints
@@ -510,6 +514,16 @@ class Lugar
         nrSetor: Integer;
 
     operations
+        inicializa(estadio: Estadio, bilhete: Bilhete, id_: Integer, nrLugar_: Integer, nrFila_: Integer, nrPorta_: Integer, nrSetor_: Integer)
+			begin
+			    insert(bilhete, self) into Bilhete_Lugar;
+			    insert(estadio, self) into Estadio_Lugar;
+				self.id:= id_;
+				self.nrLugar:= nrLugar_;
+				self.nrFila:= nrFila_;
+				self.nrPorta:= nrPorta_;
+				self.nrSetor:= nrSetor_;
+			end
 
     constraints
 
@@ -522,6 +536,16 @@ class TabelaPrecos
         tipoVenda: TipoVenda;
 
     operations
+        inicializa(bilhetes: Set(Bilhete), id_: Integer, tipoVenda_: TipoVenda)
+			begin
+				self.id:= id_;
+				self.tipoVenda:= tipoVenda_;
+
+				for b in bilhetes do
+					insert(b, self) into Preco
+				end
+
+			end
 
     constraints
 
@@ -554,12 +578,17 @@ associationclass Preco
 
 	between
 		Bilhete [0..*] role bilhete
-		TabelaPrecos [0..*] role tabelaPrecos
+		TabelaPrecos [0..1] role tabelaPrecos
 
     attributes
         custo: Integer;
 
     operations
+        inicializa(custo_: Integer)
+			begin
+				self.custo:= custo_;
+				--insert(estadio, self) into Pais_Participante
+			end
 
     constraints
 
@@ -567,8 +596,8 @@ end --Preco
 
 
 association Bilhete_Lugar between
-	Bilhete [*] role bilhete
-	Lugar [*] role lugar
+	Bilhete [0..1] role bilhete
+	Lugar [0..1] role lugar
 end
 
 association Jogo_Televisao between
