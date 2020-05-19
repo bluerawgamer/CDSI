@@ -491,7 +491,10 @@ class Bilhete
 		funcionario: String;
 
 	operations
-
+        inicializa(nome_: String)
+			begin
+				self.nome:= nome_
+			end
 
 	constraints
 

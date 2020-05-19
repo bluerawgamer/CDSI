@@ -1,11 +1,16 @@
-
-
-
-
-
 reset
 
 --------------------------------------------------------------------------------
-!new Bilhete(1, '2012-06-08', 1, 'Jose Antonio')
+!new Continente('Europa')
+!Europa.inicializa('Europa')
+
+!new Pais('Portugal')
+!Portugal.inicializa('Portugal', 10000000, 93000, Europa)
+
+!new Cidade
+!Cidade1.inicializa('Setubal', 988000, false, Portugal)
+
+!new Estadio
+!Estadio1.inicializa('Bonfim', 1962, 15497, Cidade1)
 --------------------------------------------------------------------------------
 check
