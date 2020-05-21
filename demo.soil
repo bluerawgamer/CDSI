@@ -1,0 +1,27 @@
+----------------------------------------------------
+-- Demo of InteractiveCoffeeDispenser model using menus or simulation
+--
+-- call this demo in the USE console like this:
+-- use> open -q demo.soil
+----------------------------------------------------
+
+reset
+
+-- creation of a GUI for the coffee dispenser
+
+! new GUI('bilheticaGUI')
+
+-- call of operation GUI.main(menus: Boolean, debug: Boolean)
+
+-- Coffee dispenser with menus, without debug
+--! coffeeMachineGUI.main(true, false)
+
+-- Coffee dispenser with menus and debug
+! bilheticaGUI.main()
+
+-- Coffee dispenser simulation (no menus), without debug
+-- ! coffeeMachineGUI.main(false, false)
+
+-- Coffee dispenser simulation (no menus) and debug
+-- ! coffeeMachineGUI.main(false, true)
+
