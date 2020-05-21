@@ -497,8 +497,6 @@ end
 
 class PSP < Seguranca
 
-    attributes
-
 end
 
 -------------------------------------------------------------------------------------------------
@@ -517,6 +515,7 @@ class Camara
 
     attributes
         numero: Integer
+        estado: Integer
 
 end
 
@@ -545,6 +544,7 @@ class Detetor_Presenca
 
     attributes
         numero: Integer
+        on: Boolean
 
 end
 
@@ -554,6 +554,17 @@ class Detetor_CO2
 
     attributes
         numero: Integer
+        on: Boolean
+
+end
+
+--------------------------------------------------------------
+
+class Passe
+
+    attributes
+        nome: String
+        acesso: Access
 
 end
 
@@ -564,11 +575,6 @@ end
 composition Campeonato_Grupo between 
 	Campeonato [1] role campeonato
 	Grupo [*] role grupos
-end
-
-composition Setor_Estadio between
-    Estadio [1] role estadio
-    Setor [*] role setor
 end
 
 aggregation Grupo_Pais between 
@@ -634,6 +640,11 @@ end
 association Membro_Cartao between 
 	Membro [1] role membro
 	Cartao [0..2] role cartoes
+end
+
+composition Setor_Estadio between
+    Estadio [1] role estadio
+    Setor [*] role setor
 end
 
 association Policiamento between
