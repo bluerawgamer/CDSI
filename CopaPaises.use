@@ -8,6 +8,49 @@ enum FaseCampeonato {Grupos, QuartosFinal, MeiasFinais, Final}
 enum TipoCartao {Amarelo, Vermelho}
 enum PosicaoJogador {GuardaRedes, Defesa, Medio, Avancado}
 
+
+
+class GUI
+
+	operations
+
+		banner(message: String, spaces: Integer)
+			begin
+				for i in OrderedSet{1..spaces} do
+					WriteLine('')
+				end;
+				WriteLine('*****************************************');
+				WriteLine('* ' + message);
+				WriteLine('*****************************************')
+			end
+
+		main()
+			begin
+			    declare
+				    david: String;
+				self.banner('Interacao do Tema Bilhetica e Jogos', 30);
+
+
+               for t in OrderedSet{1..1000} do
+                    WriteLine('Prima Enter para o proximo passo');
+				    david := ReadLine()
+                    --self.WriteLine(david);
+
+               end;
+                --self.pause(david)
+
+				self.banner('Simulacao Terminada!', 3)
+			end
+
+		pause(message: String)
+			begin
+
+			end
+
+end --GUI
+
+
+
 --------------------------------------------------------------
 -- Domain types
 --------------------------------------------------------------
