@@ -1,6 +1,9 @@
 reset
 
 --------------------------------------------------------------------------------
+
+!new Integer('CustoCentral')
+!CustoCentral:=30
 !new CalendarDate('DataJogo1')
 !DataJogo1.initS('2012-06-08')
 
@@ -22,13 +25,21 @@ reset
 !new Lugar('Lugar1')
 !Lugar1.inicializa(Estadio1, Bilhete1, 1, 1, 1, 1, 1)
 
-!new Preco
-
 !new TabelaPrecos('TabelaPrecosJogo1')
-!TabelaPrecosJogo1.inicializa(Set{Bilhete1}, 1, TipoVenda::Local)
+!TabelaPrecosJogo1.inicializa(Set{}, 1, TipoVenda::Local)
 
-!new Preco('Central')
-!Central.inicializa
+!TabelaPrecosJogo1.associar_bilhete(Bilhete1)
+
+!Preco1.atribuir_preco(30)
+
+
+
+--!Bilhete1.Preco.atribuir_preco(30)
+--!Bilhete1.atribuir_preco(30)
+
+
+--!new Preco('PrecoBilhete1')
+--!PrecoBilhete1.atribuir_preco(30)
 
 
 --------------------------------------------------------------------------------

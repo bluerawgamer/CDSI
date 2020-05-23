@@ -532,6 +532,7 @@ class Bilhete
 		validade: CalendarDate;
 		codigo: Integer;
 		funcionario: String;
+		isValido: Boolean init = true;
 
 	operations
         inicializa(estadio: Estadio, nrBilhete_: Integer, validade_: CalendarDate, codigo_: Integer, funcionario_: String)
@@ -540,8 +541,13 @@ class Bilhete
 				self.nrBilhete:= nrBilhete_;
 				self.validade:= validade_;
 				self.codigo:= codigo_;
-				self.funcionario:= funcionario_
+				self.funcionario:= funcionario_;
 			end
+
+		check()
+		    begin
+		        temp: Boolean = true;
+		    end
 
 	constraints
 
@@ -587,8 +593,12 @@ class TabelaPrecos
 				for b in bilhetes do
 					insert(b, self) into Preco
 				end
-
 			end
+
+		associar_bilhete(b_add: Bilhete)
+		    begin
+		        insert(b_add, self) into Preco
+		    end
 
     constraints
 
@@ -601,6 +611,7 @@ class Acesso
         permissaoAcesso: PermissaoAcesso;
 
     operations
+
 
     constraints
 
@@ -627,7 +638,7 @@ associationclass Preco
         custo: Integer;
 
     operations
-        inicializa(custo_: Integer)
+        atribuir_preco(custo_: Integer)
 			begin
 				self.custo:= custo_;
 				--insert(estadio, self) into Pais_Participante
