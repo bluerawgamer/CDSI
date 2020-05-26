@@ -8,6 +8,7 @@ enum FaseCampeonato {Grupos, QuartosFinal, MeiasFinais, Final}
 enum TipoCartao {Amarelo, Vermelho}
 enum PosicaoJogador {GuardaRedes, Defesa, Medio, Avancado}
 enum Access {Publico, Media, Televisao, Privado}
+enum Estado{On, Off, Manutencao, Substituicao}
 
 --------------------------------------------------------------
 -- Domain types
@@ -481,6 +482,21 @@ end --Golo
 
 abstract class Seguranca
 
+    operations
+        inicializa(clube: Clube)
+            begin
+                insert(self, clube) into Contrato_Seguranca;
+            end
+
+        treinoExercicio()
+            begin
+                WriteLine('A iniciar alarmes...');
+                ReadLine();
+                WriteLine('A evacuar...');
+                ReadLine();
+                WriteLine('Exercicio terminado.')
+            end
+
 end
 
 -------------------------------------------------------------------------------------------------
@@ -490,6 +506,13 @@ class Privado < Seguranca
     attributes
         name: String
         funcao: String
+
+    operations
+        inicializa(name_: String, funcao_: String)
+            begin
+                self.name := name_;
+                self.funcao := funcao_;
+            end
 
 end
 
@@ -511,11 +534,17 @@ end
 
 -------------------------------------------------------------------------------------------------
 
-class Camara
+abstract class Equipamento
 
     attributes
         numero: Integer
-        estado: Integer
+        estado: Estado
+
+end
+
+-------------------------------------------------------------------------------------------------
+
+class Camara < Equipamento
 
 end
 
@@ -540,21 +569,13 @@ end
 
 -------------------------------------------------------------------------------------------------
 
-class Detetor_Presenca
-
-    attributes
-        numero: Integer
-        on: Boolean
+class Detetor_Presenca < Equipamento
 
 end
 
 -------------------------------------------------------------------------------------------------
 
-class Detetor_CO2
-
-    attributes
-        numero: Integer
-        on: Boolean
+class Detetor_CO2 < Equipamento
 
 end
 
@@ -654,12 +675,12 @@ end
 
 association Contrato_Seguranca between
     Seguranca [*] role seguranca
-    Clube [1..2] role clube
+    Clube [1] role clube
 end
 
-association Setor_Camara between
+association Setor_Equipamento between
     Setor [1] role setor
-    Camara [*] role camara
+    Equipamento [*] role equipamento
 end
 
 association Gravacao_Camara between
@@ -670,16 +691,6 @@ end
 association Setor_Extintor between
     Setor [1] role setor
     Extintor [*] role extintor
-end
-
-association Setor_CO2 between
-    Setor [1] role setor
-    Detetor_CO2 [*] role co2
-end
-
-association Setor_Presenca between
-    Setor [1] role setor
-    Detetor_Presenca [*] role presenca
 end
 
 association PSP_Cidade between
