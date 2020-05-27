@@ -483,9 +483,10 @@ end --Golo
 abstract class Seguranca
 
     operations
-        inicializa(clube: Clube)
+        inicializa(clube: Clube, jogo: Jogo)
             begin
                 insert(self, clube) into Contrato_Seguranca;
+                insert(self, jogo) into Policiamento
             end
 
         treinoExercicio()
@@ -508,10 +509,10 @@ class Privado < Seguranca
         funcao: String
 
     operations
-        inicializa(name_: String, funcao_: String)
+        inicializaPrivado(nome: String, funcao_: String)
             begin
-                self.name := name_;
-                self.funcao := funcao_;
+                self.name := nome;
+                self.funcao := funcao_
             end
 
 end
@@ -519,6 +520,12 @@ end
 -------------------------------------------------------------------------------------------------
 
 class PSP < Seguranca
+
+    operations
+        inicializaPSP(cidade: Cidade)
+            begin
+                insert(cidade, self) into PSP_Cidade
+            end
 
 end
 
@@ -530,6 +537,50 @@ class Setor
         numero: Integer
         acesso: Access
 
+    operations
+        inicializa(numero_: Integer, acesso_: Access, estadio: Estadio)
+            begin
+                self.numero:= numero_;
+                self.acesso:= acesso_;
+                insert(estadio,self) into Setor_Estadio
+            end
+
+        ligarEquipamento()
+            begin
+                for eq in self.equipamento->select(eq| eq.estado=#Off) do
+                    eq.setEstado(#On)
+                end
+            end
+
+        desligarEquipamento()
+            begin
+                for eq in self.equipamento->select(eq| eq.estado=#On) do
+                    eq.setEstado(#Off)
+                end
+            end
+
+        verificarEquipamento()
+            begin
+
+                declare
+                    data: CalendarDate;
+
+                for eq in self.equipamento->select(eq| eq.estado=#Manutencao) do
+                    eq.setEstado(#Off)
+                end;
+
+                for ext in self.extintor->select(extintor| extintor.validade.isBeforeOrEqual(data.NOW) or extintor.usado) do
+                    declare
+                        extintor_ : Extintor,
+                        validade_: CalendarDate;
+
+                     validade_:=validade_.stringToDate((ext.validade.year+3).toString()+'-'+ext.validade.month.toString()+'-'+ext.validade.day.toString());
+
+                    extintor_.inicializa(validade_,self);
+                    destroy ext;
+                end
+            end
+
 end
 
 -------------------------------------------------------------------------------------------------
@@ -538,7 +589,21 @@ abstract class Equipamento
 
     attributes
         numero: Integer
-        estado: Estado
+        estado: Estado init=Estado::Off
+
+    operations
+        inicializa(numero_: Integer, setor: Setor)
+            begin
+                self.numero:=numero_;
+                insert(setor, self) into Setor_Equipamento
+            end
+       pre Numero_Unico: Equipamento.allInstances->isUnique(numero_)
+
+
+        setEstado(estado_: Estado)
+            begin
+                self.estado:= estado_
+            end
 
 end
 
@@ -546,15 +611,36 @@ end
 
 class Camara < Equipamento
 
+    operations
+        gravar(data: CalendarDate)
+            begin
+                declare
+                    grav: Gravacao;
+                grav.inicializa(data.toString(), data);
+                insert(grav, self) into Gravacao_Camara
+            end
+
 end
 
 -------------------------------------------------------------------------------------------------
 
-class Gravacoes
+class Gravacao
 
     attributes
         nome: String
         data: CalendarDate
+
+    operations
+        inicializa(nome_: String, data_: CalendarDate)
+            begin
+                self.nome := nome_;
+                self.data := data_
+            end
+
+        renomear(nome_: String)
+            begin
+                self.nome := nome_
+            end
 
 end
 
@@ -564,6 +650,19 @@ class Extintor
 
     attributes
         validade: CalendarDate
+        usado: Boolean init=false
+
+    operations
+        inicializa(data: CalendarDate, setor: Setor)
+            begin
+                self.validade:=data;
+                insert(setor, self) into Setor_Extintor
+            end
+
+        usar()
+            begin
+                self.usado := true;
+            end
 
 end
 
@@ -586,6 +685,13 @@ class Passe
     attributes
         nome: String
         acesso: Access
+
+    operations
+        inicializa(nome_: String, acesso_: Access)
+            begin
+                self.nome:= nome_;
+                self.acesso:= acesso_
+            end
 
 end
 
@@ -684,7 +790,7 @@ association Setor_Equipamento between
 end
 
 association Gravacao_Camara between
-    Gravacoes [*] role gravacoes
+    Gravacao [*] role gravacao
     Camara [1] role camara
 end
 
