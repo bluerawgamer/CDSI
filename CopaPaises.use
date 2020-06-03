@@ -601,7 +601,7 @@ class Setor
                          detetor: Detetor_Presenca;
 
                         detetor := new Detetor_Presenca;
-                        detetor.inicializa(self.equipamento.select(eq| eq.oclIsTypeOf(Detetor_Presenca)).numero->max+1,self)
+                        detetor.inicializa(self.equipamento.select(eq| eq.oclIsTypeOf(Detetor_Presenca)).numero->max+1,self);
                         destroy eq;
                     else
                     if eq.oclIsTypeOf(Detetor_CO2) then
@@ -609,7 +609,7 @@ class Setor
                             co2: Detetor_CO2;
 
                         co2 := new Detetor_CO2;
-                        co2.inicializa(self.equipamento.select(eq| eq.oclIsTypeOf(Detetor_Presenca)).numero->max+1,self)
+                        co2.inicializa(self.equipamento.select(eq| eq.oclIsTypeOf(Detetor_Presenca)).numero->max+1,self);
                         destroy eq;
                     else
                     if eq.oclIsTypeOf(Camara) then
@@ -617,7 +617,7 @@ class Setor
                             camara: Camara;
 
                         camara := new Camara;
-                        camara.inicializa(self.equipamento.select(eq| eq.oclIsTypeOf(Camara)).numero->max+1,self)
+                        camara.inicializa(self.equipamento.select(eq| eq.oclIsTypeOf(Camara)).numero->max+1,self);
                         destroy eq;
                     end;
                     end;
@@ -644,7 +644,7 @@ class Setor
                         validade_: CalendarDate;
 
                     validade_:=new CalendarDate;
-                    validade_:= ext.validade.yearsAhead(3);
+                    validade_:= data.NOW.yearsAhead(3);
                     extintor_:=new Extintor;
                     extintor_.inicializa(validade_,self);
                     destroy ext;
@@ -675,6 +675,8 @@ abstract class Equipamento
                 self.estado := Estado::Off
             end
 
+        pre Pronto: Set {#Off, #Substituicao} -> excludes(self.estado)
+
         manuntencao()
             begin
                 self.estado := Estado::Manutencao
@@ -704,7 +706,7 @@ abstract class Equipamento
 
                 On [estado=#On]
 
-                Mainutencao [estado=#Manutencao]
+                Manutencao [estado=#Manutencao]
 
                 Substituicao [estado=#Substituicao]
 
@@ -716,13 +718,11 @@ abstract class Equipamento
 
                 On -> Off {desligar()}
 
-                On -> Maintenance {manuntencao()}
+                On -> Manutencao {manuntencao()}
 
                 On -> Substituicao {substituicao()}
 
-                Maintenance -> Off {desligar()}
-
-                Substituicao -> Off {desligar()}
+                Manutencao -> Off {desligar()}
 
         end
 
@@ -740,7 +740,7 @@ class Camara < Equipamento
             end
        pre Numero_Unico: not Equipamento.allInstances.numero->includes(numero_)
 
-        gravar(data: String)
+       gravar(data: String)
             begin
                 declare
                     data_: CalendarDate,
@@ -748,7 +748,7 @@ class Camara < Equipamento
                 grav:= new Gravacao;
                 data_:= new CalendarDate;
                 data_.stringToDate(data);
-                grav.inicializa(data,data_);
+                grav.inicializa(data, data_);
                 insert(grav, self) into Gravacao_Camara
             end
         pre Ligada: estado=#On
