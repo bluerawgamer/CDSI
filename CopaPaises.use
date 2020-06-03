@@ -602,6 +602,7 @@ class Setor
 
                         detetor := new Detetor_Presenca;
                         detetor.inicializa(self.equipamento.select(eq| eq.oclIsTypeOf(Detetor_Presenca)).numero->max+1,self)
+                        destroy eq;
                     else
                     if eq.oclIsTypeOf(Detetor_CO2) then
                         declare
@@ -609,6 +610,7 @@ class Setor
 
                         co2 := new Detetor_CO2;
                         co2.inicializa(self.equipamento.select(eq| eq.oclIsTypeOf(Detetor_Presenca)).numero->max+1,self)
+                        destroy eq;
                     else
                     if eq.oclIsTypeOf(Camara) then
                         declare
@@ -616,6 +618,7 @@ class Setor
 
                         camara := new Camara;
                         camara.inicializa(self.equipamento.select(eq| eq.oclIsTypeOf(Camara)).numero->max+1,self)
+                        destroy eq;
                     end;
                     end;
                     end;
