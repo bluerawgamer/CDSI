@@ -7,7 +7,7 @@ enum TipoCampeonato {Europeu, Mundial}
 enum FaseCampeonato {Grupos, QuartosFinal, MeiasFinais, Final}
 enum TipoCartao {Amarelo, Vermelho}
 enum PosicaoJogador {GuardaRedes, Defesa, Medio, Avancado}
-enum Access {Publico, Media, Televisao, Privado}
+enum Access {Publico, Media, Televisao, Interno}
 enum Estado{On, Off, Manutencao, Substituicao}
 
 --------------------------------------------------------------
@@ -114,6 +114,7 @@ class Estadio
 		nome: String
 		inauguracao: Integer -- ano de inaugura��o
 		lotacao: Integer
+		blacklist: Set(String)
 		
 	operations
 		inicializa(nome: String, inauguracao: Integer, lotacao: Integer, cidade: Cidade)
@@ -121,6 +122,7 @@ class Estadio
 				self.nome:= nome;
 				self.inauguracao:= inauguracao;
 				self.lotacao:= lotacao;
+				self.blacklist := Set {};
 				insert (cidade,self) into Cidade_Estadio
 			end	
 		
@@ -483,9 +485,8 @@ end --Golo
 abstract class Seguranca
 
     operations
-        inicializa(clube: Clube, jogo: Jogo)
+        relaciona(jogo: Jogo)
             begin
-                insert(self, clube) into Contrato_Seguranca;
                 insert(self, jogo) into Policiamento
             end
 
@@ -506,13 +507,46 @@ class Privado < Seguranca
 
     attributes
         name: String
-        funcao: String
+        funcao: Set(String)
 
     operations
-        inicializaPrivado(nome: String, funcao_: String)
+        inicializaPrivado(nome: String, funcao_: Set(String))
             begin
                 self.name := nome;
                 self.funcao := funcao_
+            end
+
+        controloEntradas(passe : Passe, setor: Setor)
+            begin
+                if setor.estadio.blacklist->includes(passe.nome) then
+                    destroy passe;
+                end
+            end
+
+            pre Area_Encarregue: self.posto->includes(setor)
+
+        controloAcessos(passe : Passe, setor: Setor)
+            begin
+                if not passe.acesso->includes(setor.acesso) then
+                    self.expulsar(passe);
+                end
+            end
+
+            pre Area_Encarregue: self.posto->includes(setor)
+
+        expulsar(passe: Passe)
+            begin
+                for e in self.posto.estadio do
+                    e.blacklist := e.blacklist->including(passe.nome);
+                    destroy passe;
+                end
+            end
+
+        assume(setores : Set (Setor) )
+            begin
+                for s in setores do
+                   insert(self, s) into Privado_Setor
+                end
             end
 
 end
@@ -548,15 +582,44 @@ class Setor
         ligarEquipamento()
             begin
                 for eq in self.equipamento->select(eq| eq.estado=#Off) do
-                    eq.setEstado(#On)
+                    eq.ligar()
                 end
             end
 
         desligarEquipamento()
             begin
                 for eq in self.equipamento->select(eq| eq.estado=#On) do
-                    eq.setEstado(#Off)
+                    eq.desligar()
                 end
+            end
+
+        substituirEquipamento()
+            begin
+                for eq in self.equipamento->select(eq| eq.estado=#Substituicao) do
+                    if eq.oclIsTypeOf(Detetor_Presenca) then
+                        declare
+                         detetor: Detetor_Presenca;
+
+                        detetor := new Detetor_Presenca;
+                        detetor.inicializa(self.equipamento.select(eq| eq.oclIsTypeOf(Detetor_Presenca)).numero->max+1,self)
+                    else
+                    if eq.oclIsTypeOf(Detetor_CO2) then
+                        declare
+                            co2: Detetor_CO2;
+
+                        co2 := new Detetor_CO2;
+                        co2.inicializa(self.equipamento.select(eq| eq.oclIsTypeOf(Detetor_Presenca)).numero->max+1,self)
+                    else
+                    if eq.oclIsTypeOf(Camara) then
+                        declare
+                            camara: Camara;
+
+                        camara := new Camara;
+                        camara.inicializa(self.equipamento.select(eq| eq.oclIsTypeOf(Camara)).numero->max+1,self)
+                    end;
+                    end;
+                    end;
+                end;
             end
 
         verificarEquipamento()
@@ -565,17 +628,21 @@ class Setor
                 declare
                     data: CalendarDate;
 
+                data:=new CalendarDate;
+
                 for eq in self.equipamento->select(eq| eq.estado=#Manutencao) do
-                    eq.setEstado(#Off)
+                    eq.desligar()
                 end;
 
                 for ext in self.extintor->select(extintor| extintor.validade.isBeforeOrEqual(data.NOW) or extintor.usado) do
                     declare
                         extintor_ : Extintor,
+                        temp: String,
                         validade_: CalendarDate;
 
-                     validade_:=validade_.stringToDate((ext.validade.year+3).toString()+'-'+ext.validade.month.toString()+'-'+ext.validade.day.toString());
-
+                    validade_:=new CalendarDate;
+                    validade_:= ext.validade.yearsAhead(3);
+                    extintor_:=new Extintor;
                     extintor_.inicializa(validade_,self);
                     destroy ext;
                 end
@@ -591,19 +658,70 @@ abstract class Equipamento
         numero: Integer
         estado: Estado init=Estado::Off
 
-    operations
-        inicializa(numero_: Integer, setor: Setor)
-            begin
-                self.numero:=numero_;
-                insert(setor, self) into Setor_Equipamento
-            end
-       pre Numero_Unico: Equipamento.allInstances->isUnique(numero_)
+        operations
 
-
-        setEstado(estado_: Estado)
+        ligar()
             begin
-                self.estado:= estado_
+                self.estado := Estado::On
             end
+
+        pre Funcional: self.estado = #Off
+
+        desligar()
+            begin
+                self.estado := Estado::Off
+            end
+
+        manuntencao()
+            begin
+                self.estado := Estado::Manutencao
+            end
+
+        pre Em_Funcionamento: self.estado = #On
+
+        substituicao()
+            begin
+                self.estado := Estado::Substituicao
+            end
+
+        pre Em_Funcionamento: self.estado = #On
+
+--------------------------------------------------------------
+-- Estados
+--------------------------------------------------------------
+
+    statemachines
+
+        psm LifeCycle
+
+            states
+                Instalado:initial
+
+                Off [estado=#Off]
+
+                On [estado=#On]
+
+                Mainutencao [estado=#Manutencao]
+
+                Substituicao [estado=#Substituicao]
+
+            transitions
+
+                Instalado -> Off {create}
+
+                Off -> On {ligar()}
+
+                On -> Off {desligar()}
+
+                On -> Maintenance {manuntencao()}
+
+                On -> Substituicao {substituicao()}
+
+                Maintenance -> Off {desligar()}
+
+                Substituicao -> Off {desligar()}
+
+        end
 
 end
 
@@ -612,13 +730,25 @@ end
 class Camara < Equipamento
 
     operations
-        gravar(data: CalendarDate)
+        inicializa(numero_: Integer, setor: Setor)
+            begin
+                self.numero:=numero_;
+                insert(setor, self) into Setor_Equipamento
+            end
+       pre Numero_Unico: not Equipamento.allInstances.numero->includes(numero_)
+
+        gravar(data: String)
             begin
                 declare
+                    data_: CalendarDate,
                     grav: Gravacao;
-                grav.inicializa(data.toString(), data);
+                grav:= new Gravacao;
+                data_:= new CalendarDate;
+                data_.stringToDate(data);
+                grav.inicializa(data,data_);
                 insert(grav, self) into Gravacao_Camara
             end
+        pre Ligada: estado=#On
 
 end
 
@@ -631,7 +761,7 @@ class Gravacao
         data: CalendarDate
 
     operations
-        inicializa(nome_: String, data_: CalendarDate)
+        inicializa(nome_:String,data_: CalendarDate)
             begin
                 self.nome := nome_;
                 self.data := data_
@@ -670,11 +800,27 @@ end
 
 class Detetor_Presenca < Equipamento
 
+    operations
+        inicializa(numero_: Integer, setor: Setor)
+            begin
+                self.numero:=numero_;
+                insert(setor, self) into Setor_Equipamento
+            end
+       pre Numero_Unico: not Equipamento.allInstances.numero->includes(numero_)
+
 end
 
 -------------------------------------------------------------------------------------------------
 
 class Detetor_CO2 < Equipamento
+
+    operations
+        inicializa(numero_: Integer, setor: Setor)
+            begin
+                self.numero:=numero_;
+                insert(setor, self) into Setor_Equipamento
+            end
+       pre Numero_Unico: not Equipamento.allInstances.numero->includes(numero_)
 
 end
 
@@ -684,10 +830,10 @@ class Passe
 
     attributes
         nome: String
-        acesso: Access
+        acesso: Set (Access)
 
     operations
-        inicializa(nome_: String, acesso_: Access)
+        inicializa(nome_: String, acesso_: Set (Access))
             begin
                 self.nome:= nome_;
                 self.acesso:= acesso_
@@ -779,11 +925,6 @@ association Policiamento between
     Jogo [1] role jogo
 end
 
-association Contrato_Seguranca between
-    Seguranca [*] role seguranca
-    Clube [1] role clube
-end
-
 association Setor_Equipamento between
     Setor [1] role setor
     Equipamento [*] role equipamento
@@ -802,6 +943,11 @@ end
 association PSP_Cidade between
     Cidade [1] role cidade
     PSP [0..1] role psp
+end
+
+association Privado_Setor between
+    Privado [1] role vigilancia
+    Setor [*] role posto
 end
 
 --------------------------------------------------------------

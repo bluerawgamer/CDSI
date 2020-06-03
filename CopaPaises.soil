@@ -1,7 +1,107 @@
 reset
 ---------------------------------------
 
+!new CalendarDate('DataJogo1')
+!DataJogo1.initS('2012-06-08')
 
+!new Campeonato('Euro2012')
+
+!Euro2012.inicializa('Euro2012', TipoCampeonato::Europeu, '2012-06-08', '2012-07-01', Set{'Grecia','Polonia', 'Portugal', 'Russia'}, Set{'Euro2012_GrupoA'})
+
+!new Continente('Europa')
+!Europa.inicializa('Europa')
+
+!new Pais('Portugal')
+!Portugal.inicializa('Portugal', 10000000, 93000, Europa)
+
+!new Pais('Grecia')
+!Grecia.inicializa('Grecia', 11170957, 131990, Europa)
+
+!new Grupo('Euro2012_GrupoA')
+!Euro2012_GrupoA.inicializa('Grupo A', FaseCampeonato::Grupos, Set{Grecia, Portugal, Polonia, Russia})
+
+!Treinador_Russia.inicializa('Godenski', '1950-12-02', Russia)
+!Treinador_Portugal.inicializa('Manel', '1950-12-02', Portugal)
+!Treinador_Grecia.inicializa('Socratico', '1950-12-02', Grecia)
+!Treinador_Polonia.inicializa('Joao', '1920-12-02', Polonia)
+
+!new Cidade
+!Cidade1.inicializa('Setubal', 98000, false, Portugal)
+
+!new Estadio
+!Estadio1.inicializa('Bonfim', 1962, 15497, Cidade1)
+
+!new Jogo('Jogo1_grupos')
+!Jogo1_grupos.inicializa('2012-06-08', '18:00�UTC+2', Portugal, Grecia, Estadio1, Euro2012_GrupoA)
+
+
+!new Setor('Setor1')
+!new Setor('Setor2')
+!new Setor('Setor3')
+!new Setor('Setor4')
+
+!Setor1.inicializa(1,Access::Publico,Estadio1)
+!Setor2.inicializa(2,Access::Media, Estadio1)
+!Setor3.inicializa(3,Access::Televisao, Estadio1)
+!Setor4.inicializa(4,Access::Interno, Estadio1)
+
+!new CalendarDate('Validade1')
+!Validade1.initS('2012-07-30')
+!new Extintor('Extintor1')
+!Extintor1.inicializa(Validade1, Setor1)
+
+!new CalendarDate('Validade2')
+!Validade2.initS('2010-02-03')
+!new Extintor('Extintor2')
+!Extintor2.inicializa(Validade2, Setor2)
+
+!new CalendarDate('Validade3')
+!Validade3.initS('2013-07-12')
+!new Extintor('Extintor3')
+!Extintor3.inicializa(Validade3, Setor3)
+
+!new CalendarDate('Validade4')
+!Validade4.initS('2011-02-24')
+!new Extintor('Extintor4')
+!Extintor4.inicializa(Validade4, Setor4)
+
+!new Detetor_Presenca('Detetor1')
+!Detetor1.inicializa(100, Setor1)
+!new Detetor_Presenca('Detetor2')
+!Detetor2.inicializa(101, Setor2)
+!new Detetor_Presenca('Detetor3')
+!Detetor3.inicializa(102, Setor3)
+!new Detetor_Presenca('Detetor4')
+!Detetor4.inicializa(103, Setor4)
+
+!new Detetor_CO2('CO21')
+!CO21.inicializa(200, Setor1)
+!new Detetor_CO2('CO22')
+!CO22.inicializa(201, Setor2)
+!new Detetor_CO2('CO23')
+!CO23.inicializa(202, Setor3)
+!new Detetor_CO2('CO24')
+!CO24.inicializa(203, Setor4)
+
+!new Camara('Camara1')
+!Camara1.inicializa(300, Setor1)
+!new Camara('Camara2')
+!Camara2.inicializa(301, Setor2)
+!new Camara('Camara3')
+!Camara3.inicializa(302, Setor3)
+!new Camara('Camara4')
+!Camara4.inicializa(303, Setor4)
+
+!new PSP('PSPBonfim')
+!PSPBonfim.inicializaPSP(Cidade1)
+
+!new Privado('SegurINC')
+!SegurINC.inicializaPrivado('SegurINC', Set{'Controlo de entradas', 'Controlo de acessos', 'Controlo de campo'})
+
+!SegurINC.relaciona(Jogo1_grupos)
+!PSPBonfim.relaciona(Jogo1_grupos)
+
+!SegurINC.assume(Set{Setor1,Setor2,Setor3,Setor4})
 
 ---------------------------------------
 check
